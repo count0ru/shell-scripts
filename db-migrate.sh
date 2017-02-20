@@ -38,4 +38,19 @@ if [ -d "$MYSQLDIR/$DATABASE" ]; then
 fi
 mysql -e "create database $DATABASE;" &&
 mysql $DATABASE < $DSTDIR/$DATABASE/$DATABASE-$DATEFIX/$DATABASE-struct-$DATEFIX.sql
+sleep 3
 
+#Импортируем таблицы по списку в нашу БД
+for TABLENAME in $(cat $DSTDIR/$DATABASE/$DATABASE-$DATEFIX/$DATABASE-$DATEFIX.tableslist)
+do
+        mysql -e "ALTER TABLE $TABLENAME DISCARD TABLESPACE";
+done
+
+cp $DSTDIR/$DATABASE/$DATABASE-$DATEFIX/$DATABASE/* $MYSQLDIR/$DATABASE &&
+chown mysql:mysql $MYSQLDIR/$DATABASE/*
+sleep 3
+
+for TABLENAME in $(cat $DSTDIR/$DATABASE/$DATABASE-$DATEFIX/$DATABASE-$DATEFIX.tableslist)
+do
+        mysql -e "ALTER TABLE $TABLENAME import TABLESPACE;"
+done
