@@ -10,7 +10,7 @@ DATEFIX=$(date +"%H%M-%d%m%Y")
 MYSQLDIR=/var/lib/mysql
 
 #Создаем директорию для импортируемых данных, структуры, списка таблиц
-mkdir -p /$DSTDIR/$DATABASE/$DATABASE-$DATEFIX
+mkdir -p $DSTDIR/$DATABASE/$DATABASE-$DATEFIX
 
 #Создаем список таблиц (на удаленном сервере и локальном), который понадобится для бекапа и импорта
 ssh $SOURCESERVER "mysql -e 'use $DATABASE; show tables;' | sed -e '1d'  | sed "s/^/$DATABASE./g" | tee /tmp/$DATABASE-$DATEFIX.tableslist"  > $DSTDIR/$DATABASE/$DATABASE-$DATEFIX/$DATABASE-$DATEFIX.tableslist
@@ -46,7 +46,7 @@ do
         mysql -e "ALTER TABLE $TABLENAME DISCARD TABLESPACE";
 done
 
-cp $DSTDIR/$DATABASE/$DATABASE-$DATEFIX/$DATABASE/* $MYSQLDIR/$DATABASE &&
+cp $DSTDIR/$DATABASE/$DATABASE-$DATEFIX/* $MYSQLDIR/$DATABASE &&
 chown mysql:mysql $MYSQLDIR/$DATABASE/*
 sleep 3
 
