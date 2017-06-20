@@ -1,4 +1,3 @@
-MASK=$1
 apt-get update
 apt-get install ruby vim wget redis-tools host -y
 wget http://download.redis.io/redis-stable/src/redis-trib.rb
