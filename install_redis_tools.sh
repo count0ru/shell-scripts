@@ -7,6 +7,8 @@ gem install redis
 #show current cluster state 
 alias redis-cluster-state='for number in " " -{1..6}; do echo -n "redis$number "; redis-cli -h redis$number cluster info | grep cluster_state; done'
 
+cd $HOME
+
 #remove user input from redis_trib
 sed -i 's/yes_or_die "Fix these slots by covering with a random node?"/#yes_or_die "Fix these slots by covering with a random node?"/' redis-trib.rb 
 
