@@ -14,3 +14,12 @@ function redis-cluster-cmd() { for number in " " -{1..6}; do echo -n "redis$numb
 sed -i 's/yes_or_die "Fix these slots by covering with a random node?"/#yes_or_die "Fix these slots by covering with a random node?"/' redis-trib.rb 
 
 $(echo "./redis-trib.rb create --replicas 0 $(echo $(for number in " " -{1..6}; do host redis$number | awk '{print $4}'; done | sed ':a;N;$!ba;s/\n/:6379 /g' ):6379)")      
+
+#generate test data for redis
+for i in 32 {101..106}; 
+do
+  for j in {1..99};
+  do
+    redis-cli -c -h 10.0.0.$i set key$i$j value$i$j;
+  done
+done
