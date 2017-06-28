@@ -13,6 +13,9 @@ function redis-cluster-cmd() { for number in " " -{1..6}; do echo -n "redis$numb
 #remove user input from redis_trib
 sed -i 's/yes_or_die "Fix these slots by covering with a random node?"/#yes_or_die "Fix these slots by covering with a random node?"/' redis-trib.rb 
 
+#get redis pods ip
+echo $(kubectl describe pods --namespace=redis-cluster | grep IP | awk {'print $2'} | sed ':a;N;$!ba;s/\n/:6379 /g';):6379
+
 $(echo "./redis-trib.rb create --replicas 0 $(echo $(for number in " " -{1..6}; do host redis$number | awk '{print $4}'; done | sed ':a;N;$!ba;s/\n/:6379 /g' ):6379)")      
 
 #generate test data for redis
