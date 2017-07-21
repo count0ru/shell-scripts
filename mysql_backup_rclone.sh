@@ -7,7 +7,7 @@ RCLONE_TARGET_CONTAINER=mysproject-backup
 RCLONE_TARGET_ACCOUNT=myCDN
 
 RCLONE_BIN=/usr/local/bin/rclone
-MYSQLDUMP_BIN=$(whereis mysqldump)
+MYSQLDUMP_BIN=/usr/bin/mysqldump
 
 mkdir -p $BACKUP_DIR
 
