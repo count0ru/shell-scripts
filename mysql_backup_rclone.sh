@@ -6,18 +6,26 @@ RCLONE_SETTINGS_FILE_PATH=/home/user/rclone.conf
 RCLONE_TARGET_CONTAINER=mysproject-backup
 RCLONE_TARGET_ACCOUNT=myCDN
 
+RCLONE_BIN=/usr/local/bin/rclone
+MYSQLDUMP_BIN=$(whereis mysqldump)
+
 mkdir -p $BACKUP_DIR
 
 for DB_NAME in $(echo $(mysql -e 'show databases;' | sed -E 's/(Database|^.+_schema)//g'));
 do
-   ( mysqldump $DB_NAME > $BACKUP_DIR/$DB_NAME-$DATE_FIX.sql ) || echo "Failed";
+   echo "Trying to backup $DB_NAME in $BACKUP_DIR/$DB_NAME-$DATE_FIX.sql";
+   ( $MYSQLDUMP_BIN $DB_NAME > $BACKUP_DIR/$DB_NAME-$DATE_FIX.sql ) || echo "Failed";
+   echo "Done";
 done
 
 cd $BACKUP_DIR
 
+echo "Packing.."
 tar -cvzf $ARCH_NAME-$DATE_FIX.tar.gz *.sql --absolute-names --remove-files
 
-rclone --config $RCLONE_SETTINGS_FILE_PATH copy $ARCH_NAME-$DATE_FIX.tar.gz  $RCLONE_TARGET_ACCOUNT:$RCLONE_TARGET_CONTAINER
+echo "Upload to storage..."
+$RCLONE_BIN --config $RCLONE_SETTINGS_FILE_PATH copy $ARCH_NAME-$DATE_FIX.tar.gz  $RCLONE_TARGET_ACCOUNT:$RCLONE_TARGET_CONTAINER -v
 
+echo "Cleanup local acrhive..."
 rm  $BACKUP_DIR/*
 
